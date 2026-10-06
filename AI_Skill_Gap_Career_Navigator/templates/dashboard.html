@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- Career Analysis Section -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-lg rounded-4 mb-4">
+                <div class="card-header bg-dark text-white p-4">
+                    <h4 class="fw-bold mb-0">Career Analysis</h4>
+                </div>
+                <div class="card-body p-4">
+                    {% if assessment %}
+                        <h5 class="fw-bold text-primary mb-3">Target Career: {{ assessment.predicted_career }}</h5>
+                        <p class="text-secondary"><strong>Score:</strong> {{ assessment.score_summary }}</p>
+                        <p class="text-secondary"><strong>Skill Gaps:</strong> {{ assessment.skill_gaps }}</p>
+                        <hr>
+                        <h6 class="fw-bold">AI Learning Roadmap</h6>
+                        <div class="p-3 bg-light rounded-3 border" style="white-space: pre-wrap; font-family: inherit;">{{ assessment.roadmap }}</div>
+                        <a href="{{ url_for('skills') }}" class="btn btn-primary rounded-pill fw-bold mt-3">Take a 25-question Skill Test</a>
+                        <a href="{{ url_for('assessment') }}" class="btn btn-outline-secondary rounded-pill fw-bold mt-3">Full 25-skill Assessment</a>
+                        {% if history|length > 1 %}<hr><h6 class="fw-bold">Recent tests</h6>
+                        {% for h in history %}<div class="small text-secondary">{{ h.predicted_career }} — {{ h.score_summary }}</div>{% endfor %}{% endif %}
+                    {% else %}
+                        <p class="text-secondary mb-3">No assessment completed yet.</p>
+                        <a href="{{ url_for('skills') }}" class="btn btn-primary rounded-pill fw-bold">Take a Skill Test</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Assistant Chatbot Section -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-header bg-primary text-white p-4 d-flex align-items-center">
+                    <h4 class="fw-bold mb-0"><i class="fa-solid fa-robot me-2"></i>AI Career Assistant</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div id="chat-box" class="border rounded-3 p-3 mb-3" style="height: 350px; overflow-y: auto; background-color: #f8f9fa;">
+                        <div class="mb-2 text-start">
+                            <span class="d-inline-block p-2 rounded-3 bg-white border text-dark shadow-sm">
+                                Hello! Ask me anything about career guidance, technical skills, or project ideas.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="chat-input" class="form-control rounded-start-3" placeholder="Type your message here...">
+                        <button class="btn btn-primary rounded-end-3 fw-bold" id="send-btn" type="button">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const sendBtn = document.getElementById('send-btn');
+const chatInput = document.getElementById('chat-input');
+const chatBox = document.getElementById('chat-box');
+
+function esc(t) {
+    return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function fmt(t) {
+    return esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+}
+
+async function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    chatBox.innerHTML += `
+        <div class="mb-2 text-end">
+            <span class="d-inline-block p-2 rounded-3 bg-primary text-white shadow-sm">${esc(text)}</span>
+        </div>
+    `;
+    chatInput.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    const loadingId = 'loading-' + Date.now();
+    chatBox.innerHTML += `
+        <div class="mb-2 text-start" id="${loadingId}">
+            <span class="d-inline-block p-2 rounded-3 bg-white border text-secondary">Thinking...</span>
+        </div>
+    `;
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    try {
+        const response = await fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text })
+        });
+        const data = await response.json();
+        
+        const loadingElement = document.getElementById(loadingId);
+        if (loadingElement) loadingElement.remove();
+
+        chatBox.innerHTML += `
+            <div class="mb-2 text-start">
+                <span class="d-inline-block p-2 rounded-3 bg-white border text-dark shadow-sm">${fmt(data.reply)}</span>
+            </div>
+        `;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    } catch (err) {
+        const loadingElement = document.getElementById(loadingId);
+        if (loadingElement) loadingElement.remove();
+
+        chatBox.innerHTML += `
+            <div class="mb-2 text-start">
+                <span class="d-inline-block p-2 rounded-3 bg-danger text-white">Error getting response. Try again.</span>
+            </div>
+        `;
+    }
+}
+
+sendBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') sendMessage();
+});
+</script>
+{% endblock %}

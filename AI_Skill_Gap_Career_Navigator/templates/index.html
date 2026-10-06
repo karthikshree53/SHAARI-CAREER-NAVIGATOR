@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-header bg-dark text-white p-4 rounded-top-4">
+                    <h3 class="fw-bold mb-1">AI Dynamic Assessment</h3>
+                    <p class="mb-0 text-white-50">One question for each of the 25 technical skills.</p>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form action="{{ url_for('assessment') }}" method="POST"><input type="hidden" name="quiz_id" value="{{ quiz_id }}">
+                        {% for q in questions %}
+                        <div class="mb-4 pb-3 border-bottom">
+                            <h5 class="fw-bold text-dark mb-3">
+                                <span class="badge bg-primary me-2">{{ q.skill.replace('_', ' ') }}</span> 
+                                {{ loop.index }}. {{ q.question }}
+                            </h5>
+                            <div class="ps-2">
+                                {% for opt in q.options %}
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="q_{{ q.id }}" id="q_{{ q.id }}_{{ loop.index }}" value="{{ opt }}" required>
+                                    <label class="form-check-label text-secondary fs-6" for="q_{{ q.id }}_{{ loop.index }}">
+                                        {{ opt }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold py-3 shadow-sm" style="background: #4f46e5; border: none;">
+                                Submit Test & Analyze Profile
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
