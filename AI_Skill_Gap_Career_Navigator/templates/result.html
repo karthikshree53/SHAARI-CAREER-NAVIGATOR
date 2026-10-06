@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Career Guide</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #312e81, #0e7490);
+            color: white;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #cbd5e1;
+        }
+
+        .career-card {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(15px);
+        }
+
+        .career-card h2 {
+            margin-bottom: 10px;
+        }
+
+        .career-name {
+            font-size: 30px;
+            font-weight: bold;
+            color: #67e8f9;
+        }
+
+        .guide-card {
+            background: white;
+            color: #1e293b;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .guide-title {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 27px;
+        }
+
+        .guide-subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #6366f1;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6366f1, #06b6d4);
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .response {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 15px;
+            border-left: 5px solid #6366f1;
+            line-height: 1.7;
+        }
+
+        .response h3 {
+            margin-bottom: 10px;
+            color: #4f46e5;
+        }
+
+        .quick {
+            margin-top: 25px;
+        }
+
+        .quick h3 {
+            margin-bottom: 15px;
+        }
+
+        .questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .question {
+            width: auto;
+            margin: 0;
+            padding: 10px 15px;
+            background: #e0e7ff;
+            color: #3730a3;
+            font-size: 14px;
+        }
+
+        .bottom-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .bottom-buttons a {
+            flex: 1;
+            text-align: center;
+            padding: 13px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            background: rgba(255,255,255,0.15);
+        }
+
+        @media(max-width:600px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .career-name {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>🤖 AI Career Navigator</h1>
+        <p>Your personalized career guidance assistant</p>
+    </div>
+
+    <div class="career-card">
+
+        <h2>🎯 Your Predicted Career</h2>
+
+        <div class="career-name">
+            {{ career }}
+        </div>
+
+        <p style="margin-top:12px; color:#cbd5e1;">
+            This recommendation is based on your skills and profile.
+        </p>
+
+    </div>
+
+
+    <div class="guide-card">
+
+        <h2 class="guide-title">🤖 Ask Your AI Career Guide</h2>
+
+        <p class="guide-subtitle">
+            Ask any question about your career, skills, projects, learning or placement.
+        </p>
+
+
+        <textarea
+            id="question"
+            placeholder="Example: What skills should I learn for my career?"
+        ></textarea>
+
+
+        <button onclick="askGuide()">
+            🚀 Ask AI Career Guide
+        </button>
+
+
+        <div class="response" id="response">
+
+            <h3>🤖 AI Career Guide</h3>
+
+            <p id="answer"></p>
+
+        </div>
+
+
+        <div class="quick">
+
+            <h3>💡 Quick Questions</h3>
+
+            <div class="questions">
+
+                <button class="question"
+                    onclick="setQuestion('What skills should I learn next?')">
+                    Skills to Learn
+                </button>
+
+                <button class="question"
+                    onclick="setQuestion('Give me a career roadmap')">
+                    Career Roadmap
+                </button>
+
+                <button class="question"
+                    onclick="setQuestion('What projects should I build?')">
+                    Project Ideas
+                </button>
+
+                <button class="question"
+                    onclick="setQuestion('How should I prepare for placement?')">
+                    Placement Preparation
+                </button>
+
+                <button class="question"
+                    onclick="setQuestion('What interview questions should I prepare?')">
+                    Interview Questions
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="bottom-buttons">
+
+        <a href="/">🔄 Check Again</a>
+
+        <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function setQuestion(question) {
+
+    document.getElementById("question").value = question;
+
+    document.getElementById("question").focus();
+
+}
+
+
+function askGuide() {
+
+    let question =
+        document.getElementById("question").value.trim();
+
+    let response =
+        document.getElementById("response");
+
+    let answer =
+        document.getElementById("answer");
+
+    if (question === "") {
+
+        alert("Please type your question first.");
+
+        return;
+
+    }
+
+
+    let q = question.toLowerCase();
+
+
+    if (q.includes("skill")) {
+
+        answer.innerHTML =
+        "For your predicted career, focus on improving your technical skills, problem-solving ability, communication skills and practical project experience. Start with one important skill, practice it regularly, and build a project using it.";
+
+    }
+
+    else if (q.includes("project")) {
+
+        answer.innerHTML =
+        "Build 2–3 practical projects related to your career. Start with a beginner project, then create an intermediate project using real-world data. Finally, build one major project that you can demonstrate during placement interviews.";
+
+    }
+
+    else if (q.includes("roadmap") || q.includes("learn")) {
+
+        answer.innerHTML =
+        "A good roadmap is: 1️⃣ Learn the fundamentals → 2️⃣ Practice coding → 3️⃣ Learn important tools → 4️⃣ Build projects → 5️⃣ Create your resume and GitHub portfolio → 6️⃣ Practice interviews → 7️⃣ Apply for internships and placements.";
+
+    }
+
+    else if (q.includes("placement") || q.includes("job")) {
+
+        answer.innerHTML =
+        "For placement preparation, improve your programming fundamentals, Data Structures and Algorithms, SQL, aptitude, communication and technical interview skills. Build projects and keep your GitHub profile updated.";
+
+    }
+
+    else if (q.includes("interview")) {
+
+        answer.innerHTML =
+        "Prepare three areas: technical questions, project-based questions and HR questions. Be ready to explain every project in your resume, including the problem, technology used, your contribution and the final result.";
+
+    }
+
+    else if (q.includes("salary")) {
+
+        answer.innerHTML =
+        "Salary depends on the role, company, location, skills and experience. Instead of focusing only on salary, build strong technical skills and practical projects. This can improve your opportunities during placements.";
+
+    }
+
+    else {
+
+        answer.innerHTML =
+        "That's a good career question! Based on your predicted career, focus on building relevant technical skills, practical projects, problem-solving ability and placement preparation. As we upgrade this project, the AI Career Guide will provide more personalized answers to different types of questions.";
+
+    }
+
+
+    response.style.display = "block";
+
+}
+
+</script>
+
+</body>
+</html>

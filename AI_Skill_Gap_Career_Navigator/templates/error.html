@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <div class="card border-0 shadow-lg rounded-4 p-5 text-center">
+    <div class="display-4 mb-3">⚠️</div>
+    <h2 class="fw-bold">Temporary server problem</h2>
+    <p class="text-secondary">The application hit a temporary error. Your account and saved results are kept. Please return to the dashboard and try again.</p>
+    <div class="d-flex justify-content-center gap-2">
+      <a class="btn btn-primary rounded-pill" href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('login') }}">Continue</a>
+      <a class="btn btn-outline-secondary rounded-pill" href="{{ url_for('health') }}">System check</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

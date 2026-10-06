@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold mb-1">Choose a skill</h2>
+  <p class="text-secondary mb-4">Each test has 25 fresh questions created live by Google Gemini (with an automatic offline backup, so it always opens).</p>
+  <div class="row g-3">
+    {% for s in skills %}
+    <div class="col-6 col-md-4 col-lg-3">
+      <a href="{{ url_for('skill_test', name=s) }}" class="skill-link btn btn-outline-primary w-100 py-3 fw-semibold rounded-4">{{ s.replace('_',' ') }}</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div id="loading" style="display:none;position:fixed;inset:0;background:rgba(15,15,30,.75);z-index:9999;align-items:center;justify-content:center;flex-direction:column;color:#fff">
+  <div class="spinner-border text-light mb-3" style="width:3rem;height:3rem"></div>
+  <h5 class="fw-bold">Gemini is creating your 25 questions...</h5>
+  <p class="text-white-50">This can take up to 40 seconds. Please do not refresh.</p>
+</div>
+<script>
+document.querySelectorAll('.skill-link').forEach(a => a.addEventListener('click', () => {
+  document.getElementById('loading').style.display = 'flex';
+}));
+window.addEventListener('pageshow', () => { document.getElementById('loading').style.display = 'none'; });
+</script>
+{% endblock %}
